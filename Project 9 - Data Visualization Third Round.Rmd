@@ -1,0 +1,61 @@
+---
+title: "Historical WTI and Brent Crude Oil Prices (2000-2025)"
+author: "David Avila"
+date: "2026-10-26"
+output: html_document
+---
+
+```{r}
+library(readxl)
+library(ggplot2)
+
+Project_9_Excel_Data_Visualization_Third_Round <- read_excel("Project 9 - Excel - Data Visualization Third Round.xlsx", sheet = "Spot_Prices")
+
+oil_data <-
+  Project_9_Excel_Data_Visualization_Third_Round
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r}
+library(ggplot2)
+
+oil_data <- Project_9_Excel_Data_Visualization_Third_Round
+
+ggplot(oil_data, aes(x = Date)) + 
+  geom_line(aes(y = WTI_USD, color = "WTI"), na.rm = TRUE) +
+  geom_line(aes(y = Brent_USD, color = "Brent"), na.rm = TRUE) + 
+  scale_color_manual(
+    values = c("WTI" = "orange","Brent" = "steelblue")) +
+    labs(title = "Historical WTI and Brent Crude Oil Prices (2000-2025)",
+         x = "Year",
+         y = "Crude Oil Price (USD per Barrel)",
+         color = "Oil Type",
+         caption = "Source: U.S. Energy Information Administration (EIA)") + 
+    theme_minimal()
+```
+
+## Box Plot Analysis: WTI and Brent Crude Oil Prices
+```{r}
+box_data <- data.frame(
+  WTI = oil_data$WTI_USD,
+  Brent = oil_data$Brent_USD
+)
+
+box_long <- stack(box_data)
+names(box_long) <- c("Price", "Oil_Type")
+
+ggplot(box_long, aes(x = Oil_Type, y = Price, fill = Oil_Type)) + 
+  geom_boxplot(na.rm = TRUE) + 
+  scale_fill_manual(values = c("WTI" = "steelblue","Brent"= "orange")) + 
+  labs(
+    title = "Distribution of WTI and Brent Crude Oil Prices (2000-2025)",
+    x = "Oil Type",
+    y = "Crude Oil Price (USD per Barrel)",
+    caption = "Source: U.S. Energy Information Administration (EIA)") +
+    theme_minimal() +
+    theme(legend.position = "none")
+```
+
